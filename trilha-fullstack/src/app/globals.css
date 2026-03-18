@@ -48,4 +48,23 @@
     background-color: var(--color-bg-page);
     color: var(--color-text-primary);
   }
+
+  /* Custom scrollbar - thin and dark */
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: #333333;
+    border-radius: 3px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: #444444;
+  }
 }

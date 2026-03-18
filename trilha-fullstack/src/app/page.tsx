@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { StatsWrapper } from "@/components/stats-wrapper";
 import { HomeEditor } from "./home-editor";
 
 const leaderboardEntries = [
@@ -60,15 +61,7 @@ export default function HomePage() {
       </section>
 
       {/* Footer Stats */}
-      <div className="flex items-center gap-6 justify-center pt-8">
-        <span className="font-mono text-xs text-text-tertiary">
-          2,847 codes roasted
-        </span>
-        <span className="font-mono text-xs text-text-tertiary">·</span>
-        <span className="font-mono text-xs text-text-tertiary">
-          avg score: 4.2/10
-        </span>
-      </div>
+      <StatsWrapper />
 
       {/* Spacer */}
       <div className="h-15" />
