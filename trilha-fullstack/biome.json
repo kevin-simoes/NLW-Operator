@@ -40,7 +40,8 @@
               "reference"
             ]
           }
-        }
+        },
+        "noArrayIndexKey": "off"
       },
       "security": {
         "noDangerouslySetInnerHtml": "off"

@@ -1,67 +1,14 @@
 import type { Metadata } from "next";
-import type { BundledLanguage } from "shiki";
-import { CodeBlock, CodeBlockHeader } from "@/components/ui/code-block";
+import { Suspense } from "react";
+import { CollapsibleCodeRow } from "@/components/collapsible-code-row";
+import { caller } from "@/trpc/server";
+import { LeaderboardPageSkeleton } from "./leaderboard-skeleton";
 
 export const metadata: Metadata = {
   title: "Shame Leaderboard — DevRoast",
   description:
     "The most roasted code on the internet. See the worst-scored submissions ranked by shame.",
 };
-
-type LeaderboardEntry = {
-  rank: number;
-  score: number;
-  language: string;
-  lang: BundledLanguage;
-  code: string;
-};
-
-const entries: LeaderboardEntry[] = [
-  {
-    rank: 1,
-    score: 1.2,
-    language: "javascript",
-    lang: "javascript",
-    code: `eval(prompt("enter code"))
-document.write(response)
-// trust the user lol`,
-  },
-  {
-    rank: 2,
-    score: 1.8,
-    language: "typescript",
-    lang: "typescript",
-    code: `if (x == true) { return true; }
-else if (x == false) { return false; }
-else { return !false; }`,
-  },
-  {
-    rank: 3,
-    score: 2.1,
-    language: "sql",
-    lang: "sql",
-    code: `SELECT * FROM users WHERE 1=1
--- TODO: add authentication`,
-  },
-  {
-    rank: 4,
-    score: 2.3,
-    language: "java",
-    lang: "java",
-    code: `catch (e) {
-  // ignore
-}`,
-  },
-  {
-    rank: 5,
-    score: 2.5,
-    language: "javascript",
-    lang: "javascript",
-    code: `const sleep = (ms) =>
-  new Date(Date.now() + ms)
-  while(new Date() < end) {}`,
-  },
-];
 
 function scoreColor(score: number): string {
   if (score <= 3) return "text-accent-red";
@@ -70,6 +17,16 @@ function scoreColor(score: number): string {
 }
 
 export default function LeaderboardPage() {
+  return (
+    <Suspense fallback={<LeaderboardPageSkeleton />}>
+      <LeaderboardPageInner />
+    </Suspense>
+  );
+}
+
+async function LeaderboardPageInner() {
+  const { totalCount, entries } = await caller.roast.getLeaderboardEntries();
+
   return (
     <main className="flex flex-col w-full">
       <div className="flex flex-col gap-10 w-full max-w-6xl mx-auto px-10 md:px-20 py-10">
@@ -90,23 +47,24 @@ export default function LeaderboardPage() {
 
           <div className="flex items-center gap-2">
             <span className="font-mono text-xs text-text-tertiary">
-              2,847 submissions
+              {totalCount.toLocaleString()} submissions
             </span>
             <span className="font-mono text-xs text-text-tertiary">{"·"}</span>
             <span className="font-mono text-xs text-text-tertiary">
-              avg score: 4.2/10
+              showing top 20
             </span>
           </div>
         </section>
 
         {/* Leaderboard Entries */}
         <section className="flex flex-col gap-5">
-          {entries.map((entry) => {
-            const lineCount = entry.code.split("\n").length;
+          {entries.map((entry, index) => {
+            const lineCount = entry.lineCount ?? entry.code.split("\n").length;
+            const rank = index + 1;
 
             return (
               <article
-                key={entry.rank}
+                key={entry.id}
                 className="flex flex-col border border-border-primary overflow-hidden"
               >
                 {/* Meta Row */}
@@ -117,7 +75,7 @@ export default function LeaderboardPage() {
                         #
                       </span>
                       <span className="font-mono text-[13px] font-bold text-accent-amber">
-                        {entry.rank}
+                        {rank}
                       </span>
                     </div>
 
@@ -126,9 +84,9 @@ export default function LeaderboardPage() {
                         score:
                       </span>
                       <span
-                        className={`font-mono text-[13px] font-bold ${scoreColor(entry.score)}`}
+                        className={`font-mono text-[13px] font-bold ${scoreColor(Number(entry.score))}`}
                       >
-                        {entry.score.toFixed(1)}
+                        {Number(entry.score).toFixed(1)}
                       </span>
                     </div>
                   </div>
@@ -144,14 +102,11 @@ export default function LeaderboardPage() {
                 </div>
 
                 {/* Code Preview */}
-                <div className="flex flex-col">
-                  <CodeBlockHeader filename={`snippet.${entry.language}`} />
-                  <CodeBlock
-                    code={entry.code}
-                    lang={entry.lang}
-                    className="border-0 rounded-t-none"
-                  />
-                </div>
+                <CollapsibleCodeRow
+                  code={entry.code}
+                  lang={entry.language}
+                  maxLines={4}
+                />
               </article>
             );
           })}
