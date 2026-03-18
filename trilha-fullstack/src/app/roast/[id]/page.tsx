@@ -8,14 +8,50 @@ import {
 } from "@/components/ui/analysis-card";
 import { Badge } from "@/components/ui/badge";
 import { CodeBlock } from "@/components/ui/code-block";
-import { DiffLine } from "@/components/ui/diff-line";
 import { ScoreRing } from "@/components/ui/score-ring";
 import { getRoastById } from "@/db/queries";
 
-export const metadata: Metadata = {
-  title: "Roast Result — DevRoast",
-  description: "See how your code scored on DevRoast — brutally honest.",
+type Props = {
+  params: Promise<{ id: string }>;
 };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id } = await params;
+  const roast = await getRoastById(id);
+
+  if (!roast) {
+    return {
+      title: "Roast Not Found — DevRoast",
+    };
+  }
+
+  const description =
+    roast.roastQuote ?? "See how your code scored on DevRoast.";
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
+
+  return {
+    title: `Score ${roast.score}/10 — DevRoast`,
+    description,
+    openGraph: {
+      title: `Score ${roast.score}/10 — DevRoast`,
+      description,
+      type: "article",
+      images: [
+        {
+          url: `${baseUrl}/api/og/${id}`,
+          width: 1200,
+          height: 630,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `Score ${roast.score}/10 — DevRoast`,
+      description,
+      images: [`${baseUrl}/api/og/${id}`],
+    },
+  };
+}
 
 export default async function RoastResultPage({
   params,
@@ -36,6 +72,7 @@ export default async function RoastResultPage({
     label: item.severity,
     title: item.title,
     description: item.description,
+    location: item.severity,
   }));
 
   return (
@@ -74,12 +111,13 @@ export default async function RoastResultPage({
             </div>
 
             <div className="flex items-center gap-3">
-              <button
-                type="button"
+              <a
+                href={`/api/og/${roast.id}?download=true`}
+                download
                 className="font-mono text-xs text-text-primary border border-border-primary px-4 py-2 enabled:hover:bg-bg-elevated transition-colors"
               >
                 $ share_roast
-              </button>
+              </a>
             </div>
           </div>
         </section>
@@ -139,23 +177,16 @@ export default async function RoastResultPage({
             </h2>
           </div>
 
-          <div className="border border-border-primary bg-bg-input overflow-hidden">
-            <div className="flex items-center gap-2 h-10 px-4 border-b border-border-primary">
-              <span className="font-mono text-xs font-medium text-text-secondary">
-                improved_code.ts
-              </span>
+          {roast.suggestedFix ? (
+            <CodeBlock
+              code={roast.suggestedFix}
+              lang={roast.language as BundledLanguage}
+            />
+          ) : (
+            <div className="font-mono text-xs text-text-tertiary px-4 py-2 border border-border-primary bg-bg-input">
+              {"// no fix suggested"}
             </div>
-
-            <div className="flex flex-col py-1">
-              {roast.suggestedFix ? (
-                <DiffLine type="added">{roast.suggestedFix}</DiffLine>
-              ) : (
-                <div className="font-mono text-xs text-text-tertiary px-4 py-2">
-                  {"// no fix suggested"}
-                </div>
-              )}
-            </div>
-          </div>
+          )}
         </section>
       </div>
     </main>

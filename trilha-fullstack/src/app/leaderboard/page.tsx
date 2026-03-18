@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import type { BundledLanguage } from "shiki";
 import { CollapsibleCodeRow } from "@/components/collapsible-code-row";
 import { caller } from "@/trpc/server";
 import { LeaderboardPageSkeleton } from "./leaderboard-skeleton";
 
 export const metadata: Metadata = {
-  title: "Shame Leaderboard — DevRoast",
+  title: "Leaderboard — DevRoast",
   description:
-    "The most roasted code on the internet. See the worst-scored submissions ranked by shame.",
+    "The best code on the internet. See the top-scored submissions ranked by excellence.",
 };
 
 function scoreColor(score: number): string {
@@ -37,12 +38,12 @@ async function LeaderboardPageInner() {
               {">"}
             </span>
             <h1 className="font-mono text-[28px] font-bold text-text-primary">
-              shame_leaderboard
+              leaderboard
             </h1>
           </div>
 
           <p className="font-mono text-sm text-text-secondary">
-            {"// the most roasted code on the internet"}
+            {"// the best code on the internet, ranked by excellence"}
           </p>
 
           <div className="flex items-center gap-2">
@@ -104,8 +105,8 @@ async function LeaderboardPageInner() {
                 {/* Code Preview */}
                 <CollapsibleCodeRow
                   code={entry.code}
-                  lang={entry.language}
-                  maxLines={4}
+                  lang={entry.language as BundledLanguage}
+                  maxLines={10}
                 />
               </article>
             );

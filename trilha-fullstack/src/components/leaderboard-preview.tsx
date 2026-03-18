@@ -31,7 +31,7 @@ async function LeaderboardPreviewInner() {
             {"//"}
           </span>
           <span className="font-mono text-sm font-bold text-text-primary">
-            shame_leaderboard
+            best_codes
           </span>
         </div>
 
@@ -44,7 +44,7 @@ async function LeaderboardPreviewInner() {
       </div>
 
       <p className="font-mono text-[13px] text-text-tertiary -mt-2">
-        {"// the worst code on the internet, ranked by shame"}
+        {"// the best code submitted by the community"}
       </p>
 
       <div className="flex flex-col gap-3 w-full">
@@ -85,7 +85,7 @@ async function LeaderboardPreviewInner() {
             <CollapsibleCodeRow
               code={entry.code}
               lang={entry.language as BundledLanguage}
-              maxLines={4}
+              maxLines={10}
             />
           </div>
         ))}
