@@ -26,9 +26,11 @@ src/db/
 ├── schema.ts          # Database tables and enums
 ├── seed.ts            # Seed script (requires dotenv/config)
 └── queries/
-    ├── index.ts       # Export all queries
+    ├── index.ts                    # Export all queries
     ├── get-roast-by-id.ts
-    └── get-leaderboard.ts
+    ├── get-leaderboard.ts          # For homepage preview (3 items)
+    ├── get-leaderboard-entries.ts  # For full leaderboard (20 items)
+    └── create-roast.ts            # For creating new roasts
 ```
 
 ### Query Files
@@ -65,6 +67,8 @@ Always export queries from `src/db/queries/index.ts`:
 ```typescript
 export { getRoastById } from "./get-roast-by-id";
 export { getLeaderboard } from "./get-leaderboard";
+export { getLeaderboardEntries } from "./get-leaderboard-entries";
+export { createRoast } from "./create-roast";
 ```
 
 ## Running Database Scripts
