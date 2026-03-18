@@ -1,0 +1,16 @@
+{
+	"mcpServers": {
+		"context7": {
+			"command": "npx",
+			"args": ["-y", "@upstash/context7-mcp"]
+		},
+		"polar": {
+			"command": "npx",
+			"args": ["-y", "@polar-sh/mcp-server"]
+		},
+		"pencil": {
+			"command": "npx",
+			"args": ["-y", "@pencil-ai/mcp"]
+		}
+	}
+}
