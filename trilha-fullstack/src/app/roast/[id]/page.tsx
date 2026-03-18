@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import type { BundledLanguage } from "shiki";
 import {
   AnalysisCardDescription,
@@ -16,57 +17,6 @@ export const metadata: Metadata = {
   description: "See how your code scored on DevRoast — brutally honest.",
 };
 
-const mockRoast = {
-  score: 3.5,
-  verdict: "needs_serious_help",
-  roastQuote:
-    '"this code looks like it was written during a power outage... in 2005."',
-  language: "javascript",
-  lineCount: 7,
-  code: `function calculateTotal(items) {
-  var total = 0;
-  for (var i = 0; i < items.length; i++) {
-    total = total + items[i].price;
-  }
-
-  if (total > 100) {
-    console.log("discount applied");
-    total = total * 0.9;
-  }
-
-  // TODO: handle tax calculation
-  // TODO: handle currency conversion
-
-  return total;
-}`,
-  items: [
-    {
-      severity: "critical" as const,
-      title: "using var instead of const/let",
-      description:
-        "var is function-scoped and leads to hoisting bugs. use const by default, let when reassignment is needed.",
-    },
-    {
-      severity: "warning" as const,
-      title: "imperative loop pattern",
-      description:
-        "for loops are verbose and error-prone. use .reduce() or .map() for cleaner, functional transformations.",
-    },
-    {
-      severity: "good" as const,
-      title: "clear naming conventions",
-      description:
-        "calculateTotal and items are descriptive, self-documenting names that communicate intent without comments.",
-    },
-    {
-      severity: "good" as const,
-      title: "single responsibility",
-      description:
-        "the function does one thing well — calculates a total. no side effects, no mixed concerns, no hidden complexity.",
-    },
-  ],
-  suggestedFix: "return items.reduce((sum, item) => sum + item.price, 0);",
-};
 export default async function RoastResultPage({
   params,
 }: {
@@ -75,21 +25,18 @@ export default async function RoastResultPage({
   const { id } = await params;
   const dbRoast = await getRoastById(id);
 
-  const roast = dbRoast ?? mockRoast;
+  if (!dbRoast) {
+    notFound();
+  }
 
-  const issues = dbRoast
-    ? dbRoast.items.map((item) => ({
-        variant: item.severity,
-        label: item.severity,
-        title: item.title,
-        description: item.description,
-      }))
-    : mockRoast.items.map((item) => ({
-        variant: item.severity,
-        label: item.severity,
-        title: item.title,
-        description: item.description,
-      }));
+  const roast = dbRoast;
+
+  const issues = roast.items.map((item) => ({
+    variant: item.severity,
+    label: item.severity,
+    title: item.title,
+    description: item.description,
+  }));
 
   return (
     <main className="flex flex-col w-full">
