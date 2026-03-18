@@ -1,3 +1,5 @@
+require("dotenv").config({ path: ".env.local" });
+
 import { faker } from "@faker-js/faker";
 import { db } from "./index";
 import { analysisItems, roasts } from "./schema";

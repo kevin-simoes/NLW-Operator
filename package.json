@@ -12,7 +12,7 @@
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
-    "db:seed": "tsx src/db/seed.ts"
+    "db:seed": "dotenv -e .env.local -- npx tsx src/db/seed.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.2.0",
@@ -42,7 +42,9 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "babel-plugin-react-compiler": "1.0.0",
+    "cross-env": "^10.1.0",
     "dotenv": "^17.3.1",
+    "dotenv-cli": "^11.0.0",
     "drizzle-kit": "^0.29.1",
     "tailwindcss": "^4",
     "tsx": "^4.21.0",
