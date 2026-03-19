@@ -14,6 +14,11 @@ A trilha fullstck aplicou na prática como trabalhar com um agente e seus mcps, 
 Eu usei ferramentas como: React.js, Tailwind.css, Next.js, Node.js, Opencode, Biome.js, PostgreSQL e Drizzle.
 MCPs: Superpowers, Plawright, Pencil, Polar entre outros.
 
+### Trilha Python (Não finalizada)
+
+A trilha pyhton aplicou na prática como trabalha com a rede neural de uma ai pra identifcar objetivos e movimentos através de testes e testes específicos.
+Eu usei ferramentas como: Python, Jupyternotebook, entre outras.
+
 ## Experiência
 
 Ambas trilhas trabalharam com a questão do uso de AI pra facilitar processos, visto que o mercado de trabalho visa cada vez mais o uso dessas ferramentas e saber manipulá-las.
