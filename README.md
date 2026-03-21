@@ -1,4 +1,4 @@
-# NLW-Operator
+# NLW Operator
 
 #### Eu finalizei dois cursos do último NLW, sendo eles da trilha Iniciante e Fullstack
 
